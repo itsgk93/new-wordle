@@ -1,14 +1,7 @@
-// import { WORDS } from '../constants/wordlist'
+import { WORDS } from '../constants/wordlist'
 import { VALID_GUESSES } from '../constants/validGuesses'
 import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
-
-const fs = require('fs')
-
-// Returns the path to the word list which is separated by `\n`
-const wordListPath = require('word-list')
-
-const WORDS = fs.readFileSync(wordListPath, 'utf8').split('\n')
 
 export const isWordInWordList = (word: string) => {
   return (

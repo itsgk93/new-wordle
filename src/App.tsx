@@ -48,6 +48,7 @@ function App() {
 
   const [currentGuess, setCurrentGuess] = useState('')
   const [isGameWon, setIsGameWon] = useState(false)
+  const [isDisabled, setIsDisable] = useState(true)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
@@ -75,9 +76,11 @@ function App() {
     }
     const gameWasWon = loaded.guesses.includes(solution)
     if (gameWasWon) {
+      setIsDisable(false)
       setIsGameWon(true)
     }
     if (loaded.guesses.length === MAX_CHALLENGES && !gameWasWon) {
+      setIsDisable(false)
       setIsGameLost(true)
     }
     return loaded.guesses
@@ -224,11 +227,13 @@ function App() {
 
       if (winningWord) {
         setStats(addStatsForCompletedGame(stats, guesses.length))
+        setIsDisable(false)
         return setIsGameWon(true)
       }
 
       if (guesses.length === MAX_CHALLENGES - 1) {
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
+        setIsDisable(false)
         setIsGameLost(true)
       }
     }
@@ -236,7 +241,7 @@ function App() {
 
   const handleReset = () => {
     localStorage.clear()
-    window.location.reload();
+    window.location.reload()
     getWordOfDay()
   }
 
@@ -250,7 +255,7 @@ function App() {
           className="h-6 w-6 mr-2 cursor-pointer dark:stroke-white"
           onClick={() => setIsInfoModalOpen(true)}
         />
-       
+
         <ChartBarIcon
           className="h-6 w-6 mr-3 cursor-pointer dark:stroke-white"
           onClick={() => setIsStatsModalOpen(true)}
@@ -259,7 +264,18 @@ function App() {
           className="h-6 w-6 mr-3 cursor-pointer dark:stroke-white"
           onClick={() => setIsSettingsModalOpen(true)}
         />
-         <button style={{color: 'red', backgroundColor: 'white', padding: '0px 8px ', borderRadius: 10}} onClick={handleReset}>Reset</button>
+        <button
+          style={{
+            color: 'white',
+            backgroundColor: '#24a0ed',
+            padding: '0px 8px ',
+            borderRadius: 10,
+            display: isDisabled ? 'none' : 'visible',
+          }}
+          onClick={handleReset}
+        >
+          Play Again
+        </button>
       </div>
       <Grid
         guesses={guesses}
