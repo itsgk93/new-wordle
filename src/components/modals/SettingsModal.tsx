@@ -2,6 +2,7 @@ import { Alert } from '../alerts/Alert'
 import { BaseModal } from './BaseModal'
 import { SettingsToggle } from './SettingsToggle'
 import { HARD_MODE_ALERT_MESSAGE } from '../../constants/strings'
+import { RowRadioButtonsGroup } from './radio'
 
 type Props = {
   isOpen: boolean
@@ -13,6 +14,8 @@ type Props = {
   isHardModeErrorModalOpen: boolean
   isHighContrastMode: boolean
   handleHighContrastMode: Function
+  radioValue: string
+  radioHandleChange: Function
 }
 
 export const SettingsModal = ({
@@ -25,10 +28,16 @@ export const SettingsModal = ({
   isHardModeErrorModalOpen: isHardModeAlertModalOpen,
   isHighContrastMode,
   handleHighContrastMode,
+  radioValue,
+  radioHandleChange,
 }: Props) => {
   return (
     <BaseModal title="Settings" isOpen={isOpen} handleClose={handleClose}>
       <div className="grid-cols-2 gap-4">
+        <RowRadioButtonsGroup
+          value={radioValue}
+          handleChange={radioHandleChange}
+        />
         <SettingsToggle
           settingName="Hard Mode"
           flag={isHardMode}
@@ -44,6 +53,7 @@ export const SettingsModal = ({
           flag={isHighContrastMode}
           handleFlag={handleHighContrastMode}
         />
+
         <Alert
           message={HARD_MODE_ALERT_MESSAGE}
           isOpen={isHardModeAlertModalOpen}

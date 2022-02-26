@@ -1,13 +1,21 @@
-import { WORDS } from '../constants/wordlist'
-import { VALID_GUESSES } from '../constants/validGuesses'
 import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
+import { getList } from './localStorage'
+
+// const fs = require('fs')
+
+// Returns the path to the word list which is separated by `\n`
+// const wordListPath = require('word-list')
+
+// const WORDS = fs.readFileSync(wordListPath, 'utf8').split('\n')
 
 export const isWordInWordList = (word: string) => {
-  return (
-    WORDS.includes(word.toLowerCase()) ||
-    VALID_GUESSES.includes(word.toLowerCase())
-  )
+  let list = getList()
+  list = list.map(function (x) {
+    return x.toUpperCase()
+  })
+
+  return list.includes(word)
 }
 
 export const isWinningWord = (word: string) => {
@@ -44,7 +52,7 @@ export const getWordOfDay = () => {
   const index = Math.floor(Math.random() * 1000000000)
 
   return {
-    solution: WORDS[index % WORDS.length].toUpperCase(),
+    solution: getList()[index % getList().length].toUpperCase(),
     solutionIndex: index,
   }
 }

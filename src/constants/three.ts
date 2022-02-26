@@ -1,4 +1,4 @@
-export const WORDS = [
+export const THREE = [
   'AAH',
   'AAL',
   'AAS',

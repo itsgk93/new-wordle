@@ -9,6 +9,7 @@ type Props = {
   onEnter: () => void
   guesses: string[]
   isRevealing?: boolean
+  letterLength?: string
 }
 
 export const Keyboard = ({
@@ -17,6 +18,7 @@ export const Keyboard = ({
   onEnter,
   guesses,
   isRevealing,
+  letterLength,
 }: Props) => {
   const charStatuses = getStatuses(guesses)
 
@@ -59,6 +61,7 @@ export const Keyboard = ({
             onClick={onClick}
             status={charStatuses[key]}
             isRevealing={isRevealing}
+            letterLength={letterLength}
           />
         ))}
       </div>

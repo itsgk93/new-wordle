@@ -1,4 +1,4 @@
-export const six = [
+export const SIX = [
   'abased',
   'abated',
   'abates',

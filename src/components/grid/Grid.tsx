@@ -1,4 +1,4 @@
-import { MAX_CHALLENGES } from '../../constants/settings'
+import { getMaxChallanges } from '../../lib/localStorage'
 import { CompletedRow } from './CompletedRow'
 import { CurrentRow } from './CurrentRow'
 import { EmptyRow } from './EmptyRow'
@@ -8,6 +8,7 @@ type Props = {
   currentGuess: string
   isRevealing?: boolean
   currentRowClassName: string
+  letterLength?: string
 }
 
 export const Grid = ({
@@ -15,12 +16,14 @@ export const Grid = ({
   currentGuess,
   isRevealing,
   currentRowClassName,
+  letterLength,
 }: Props) => {
   const empties =
-    guesses.length < MAX_CHALLENGES - 1
-      ? Array.from(Array(MAX_CHALLENGES - 1 - guesses.length))
+    guesses.length < getMaxChallanges(letterLength ?? '5') - 1
+      ? Array.from(
+          Array(getMaxChallanges(letterLength ?? '5') - 1 - guesses.length)
+        )
       : []
-
   return (
     <div className="pb-6">
       {guesses.map((guess, i) => (
@@ -30,11 +33,15 @@ export const Grid = ({
           isRevealing={isRevealing && guesses.length - 1 === i}
         />
       ))}
-      {guesses.length < MAX_CHALLENGES && (
-        <CurrentRow guess={currentGuess} className={currentRowClassName} />
+      {guesses.length < getMaxChallanges(letterLength ?? '5') && (
+        <CurrentRow
+          guess={currentGuess}
+          className={currentRowClassName}
+          letterLength={letterLength ?? '5'}
+        />
       )}
       {empties.map((_, i) => (
-        <EmptyRow key={i} />
+        <EmptyRow key={i} letterLength={letterLength} />
       ))}
     </div>
   )

@@ -17,13 +17,7 @@ import {
   WORD_NOT_FOUND_MESSAGE,
   CORRECT_WORD_MESSAGE,
 } from './constants/strings'
-import {
-  MAX_WORD_LENGTH,
-  MAX_CHALLENGES,
-  ALERT_TIME_MS,
-  REVEAL_TIME_MS,
-  GAME_LOST_INFO_DELAY,
-} from './constants/settings'
+import { ALERT_TIME_MS, REVEAL_TIME_MS } from './constants/settings'
 import {
   isWordInWordList,
   isWinningWord,
@@ -37,6 +31,7 @@ import {
   saveGameStateToLocalStorage,
   setStoredIsHighContrastMode,
   getStoredIsHighContrastMode,
+  getMaxChallanges,
 } from './lib/localStorage'
 
 import './App.css'
@@ -79,7 +74,10 @@ function App() {
       setIsDisable(false)
       setIsGameWon(true)
     }
-    if (loaded.guesses.length === MAX_CHALLENGES && !gameWasWon) {
+    if (
+      loaded.guesses.length === getMaxChallanges(letterLength ?? '5') &&
+      !gameWasWon
+    ) {
       setIsDisable(false)
       setIsGameLost(true)
     }
@@ -94,10 +92,16 @@ function App() {
       : false
   )
 
+  const [letterLength, setLetterLength] = useState(
+    localStorage.getItem('letterLength')
+      ? localStorage.getItem('letterLength')
+      : '5'
+  )
+
   const [isMissingPreviousLetters, setIsMissingPreviousLetters] =
     useState(false)
   const [missingLetterMessage, setIsMissingLetterMessage] = useState('')
-
+  console.log(localStorage.getItem('letterLength'))
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark')
@@ -115,6 +119,12 @@ function App() {
   const handleDarkMode = (isDark: boolean) => {
     setIsDarkMode(isDark)
     localStorage.setItem('theme', isDark ? 'dark' : 'light')
+  }
+
+  const handleLetterLength = (letterLength: number) => {
+    setLetterLength(letterLength.toString())
+    localStorage.setItem('letterLength', letterLength.toString())
+    window.location.reload()
   }
 
   const handleHardMode = (isHard: boolean) => {
@@ -149,19 +159,19 @@ function App() {
           setSuccessAlert('')
           setIsStatsModalOpen(true)
         }, ALERT_TIME_MS)
-      }, REVEAL_TIME_MS * MAX_WORD_LENGTH)
+      }, REVEAL_TIME_MS * parseInt(letterLength ?? '5'))
     }
     if (isGameLost) {
       setTimeout(() => {
         setIsStatsModalOpen(true)
-      }, GAME_LOST_INFO_DELAY)
+      }, (parseInt(letterLength ?? '5') + 1) * REVEAL_TIME_MS)
     }
-  }, [isGameWon, isGameLost])
+  }, [isGameWon, isGameLost, letterLength])
 
   const onChar = (value: string) => {
     if (
-      currentGuess.length < MAX_WORD_LENGTH &&
-      guesses.length < MAX_CHALLENGES &&
+      currentGuess.length < parseInt(letterLength ?? '5') &&
+      guesses.length < getMaxChallanges(letterLength ?? '5') &&
       !isGameWon
     ) {
       setCurrentGuess(`${currentGuess}${value}`)
@@ -176,7 +186,7 @@ function App() {
     if (isGameWon || isGameLost) {
       return
     }
-    if (!(currentGuess.length === MAX_WORD_LENGTH)) {
+    if (!(currentGuess.length === parseInt(letterLength ?? '5'))) {
       setIsNotEnoughLetters(true)
       setCurrentRowClass('jiggle')
       return setTimeout(() => {
@@ -213,13 +223,13 @@ function App() {
     // chars have been revealed
     setTimeout(() => {
       setIsRevealing(false)
-    }, REVEAL_TIME_MS * MAX_WORD_LENGTH)
+    }, REVEAL_TIME_MS * parseInt(letterLength ?? '5'))
 
     const winningWord = isWinningWord(currentGuess)
 
     if (
-      currentGuess.length === MAX_WORD_LENGTH &&
-      guesses.length < MAX_CHALLENGES &&
+      currentGuess.length === parseInt(letterLength ?? '5') &&
+      guesses.length < getMaxChallanges(letterLength ?? '5') &&
       !isGameWon
     ) {
       setGuesses([...guesses, currentGuess])
@@ -231,7 +241,7 @@ function App() {
         return setIsGameWon(true)
       }
 
-      if (guesses.length === MAX_CHALLENGES - 1) {
+      if (guesses.length === getMaxChallanges(letterLength ?? '5') - 1) {
         setStats(addStatsForCompletedGame(stats, guesses.length + 1))
         setIsDisable(false)
         setIsGameLost(true)
@@ -247,7 +257,7 @@ function App() {
 
   return (
     <div className="pt-2 pb-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <div className="flex w-80 mx-auto items-center mb-8 mt-20">
+      <div className="flex w-80 mx-auto items-center mb-8">
         <h1 className="text-xl ml-2.5 grow font-bold dark:text-white">
           {'WORDLE'}
         </h1>
@@ -270,7 +280,7 @@ function App() {
             backgroundColor: '#24a0ed',
             padding: '0px 8px ',
             borderRadius: 10,
-            display: isDisabled ? 'none' : 'visible',
+            display: isDisabled ? 'none' : 'block',
           }}
           onClick={handleReset}
         >
@@ -282,6 +292,7 @@ function App() {
         currentGuess={currentGuess}
         isRevealing={isRevealing}
         currentRowClassName={currentRowClass}
+        letterLength={letterLength ?? '5'}
       />
       <Keyboard
         onChar={onChar}
@@ -289,6 +300,7 @@ function App() {
         onEnter={onEnter}
         guesses={guesses}
         isRevealing={isRevealing}
+        letterLength={letterLength ?? '5'}
       />
       <InfoModal
         isOpen={isInfoModalOpen}
@@ -317,6 +329,8 @@ function App() {
         isHardModeErrorModalOpen={isHardModeAlertOpen}
         isHighContrastMode={isHighContrastMode}
         handleHighContrastMode={handleHighContrastMode}
+        radioValue={letterLength ?? '5'}
+        radioHandleChange={handleLetterLength}
       />
 
       <Alert message={NOT_ENOUGH_LETTERS_MESSAGE} isOpen={isNotEnoughLetters} />
