@@ -12,6 +12,7 @@ type Props = {
   onClick: (value: string) => void
   isRevealing?: boolean
   letterLength?: string
+  keyHeight?: string
 }
 
 export const Key = ({
@@ -22,6 +23,7 @@ export const Key = ({
   onClick,
   isRevealing,
   letterLength,
+  keyHeight,
 }: Props) => {
   const keyDelayMs = REVEAL_TIME_MS * parseInt(letterLength ?? '5')
   const isHighContrast = getStoredIsHighContrastMode()
@@ -47,7 +49,7 @@ export const Key = ({
   const styles = {
     transitionDelay: isRevealing ? `${keyDelayMs}ms` : 'unset',
     width: `${width}px`,
-    height: '58px',
+    height: keyHeight,
   }
 
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = (event) => {

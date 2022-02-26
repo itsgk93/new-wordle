@@ -51,6 +51,9 @@ export const Keyboard = ({
     }
   }, [onEnter, onDelete, onChar])
 
+  const keyHeight =
+    window.outerWidth <= 375 && letterLength === '6' ? '45px' : '58px'
+
   return (
     <div>
       <div className="flex justify-center mb-1">
@@ -62,6 +65,7 @@ export const Keyboard = ({
             status={charStatuses[key]}
             isRevealing={isRevealing}
             letterLength={letterLength}
+            keyHeight={keyHeight}
           />
         ))}
       </div>
@@ -73,11 +77,12 @@ export const Keyboard = ({
             onClick={onClick}
             status={charStatuses[key]}
             isRevealing={isRevealing}
+            keyHeight={keyHeight}
           />
         ))}
       </div>
       <div className="flex justify-center">
-        <Key width={65.4} value="ENTER" onClick={onClick}>
+        <Key width={65.4} value="ENTER" onClick={onClick} keyHeight={keyHeight}>
           {ENTER_TEXT}
         </Key>
         {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((key) => (
@@ -87,9 +92,15 @@ export const Keyboard = ({
             onClick={onClick}
             status={charStatuses[key]}
             isRevealing={isRevealing}
+            keyHeight={keyHeight}
           />
         ))}
-        <Key width={65.4} value="DELETE" onClick={onClick}>
+        <Key
+          width={65.4}
+          value="DELETE"
+          onClick={onClick}
+          keyHeight={keyHeight}
+        >
           {DELETE_TEXT}
         </Key>
       </div>
