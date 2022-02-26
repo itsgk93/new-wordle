@@ -52,7 +52,7 @@ export const Keyboard = ({
   }, [onEnter, onDelete, onChar])
 
   const keyHeight =
-    window.outerWidth <= 375 && letterLength === '6' ? '45px' : '58px'
+    window.outerWidth <= 450 && letterLength === '6' ? '45px' : '58px'
 
   return (
     <div>

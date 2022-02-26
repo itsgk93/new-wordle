@@ -24,7 +24,7 @@ export const Cell = ({
   const isHighContrast = getStoredIsHighContrastMode()
   const letterLength = localStorage.getItem('letterLength') ?? '5'
   const styleSize =
-    window.outerWidth <= 375 && letterLength === '6' ? 'w-11 h-11' : 'w-14 h-14'
+    window.outerWidth <= 450 && letterLength === '6' ? 'w-11 h-11' : 'w-14 h-14'
   const classes = classnames(
     `${styleSize} border-solid border-2 flex items-center justify-center mx-0.5 text-4xl font-bold rounded dark:text-white`,
     {
